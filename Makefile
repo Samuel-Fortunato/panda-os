@@ -18,6 +18,9 @@ clean:
 run: $(iso)
 	qemu-system-x86_64 -cdrom $(iso)
 
+curses-run: $(iso)
+	qemu-system-x86_64 -curses -cdrom $(iso)
+
 iso: $(iso)
 
 $(iso): $(kernel) $(grub_cfg)
