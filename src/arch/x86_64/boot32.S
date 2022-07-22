@@ -14,7 +14,7 @@ start:
 		call	enable_paging
 
 		lgdt	(gdt64.pointer)				# load the 64-bit gdt
-		jmp		$0x08,$long_mode_start		# long jump to long mode
+		jmp		$0x08, $long_mode_start		# long jump to long mode
 
 		hlt
 
@@ -143,21 +143,21 @@ error:
 .section .bss
 .align 4096
 p4_table:
-	.skip 4096
+		.skip 4096
 p3_table:
-	.skip 4096
+		.skip 4096
 p2_table:
-	.skip 4096
+		.skip 4096
 
 stack_bottom:
-	.skip 64
+		.skip 64
 stack_top:
 
 .section .rodata
 gdt64:
-	.quad 0	# zero entry
-gdt64.code:
-	.quad (1<<43) | (1<<44) | (1<<47) | (1<<53) # code segment
+		.quad 0	# zero entry
+.equ gdt64.code, 0x08
+		.quad (1<<43) | (1<<44) | (1<<47) | (1<<53) # code segment
 gdt64.pointer:
-	.word . - gdt64 - 1
-	.quad gdt64
+		.word . - gdt64 - 1
+		.quad gdt64
