@@ -1,5 +1,13 @@
 .global start
-.extern long_mode_start
+
+.section .rodata
+gdt64:
+		.quad 0	# zero entry
+.equ gdt64.code, . - gdt64
+		.quad (1<<43) | (1<<44) | (1<<47) | (1<<53) # code segment
+gdt64.pointer:
+		.word . - gdt64 - 1
+		.quad gdt64
 
 .section .text
 .code32
@@ -13,8 +21,8 @@ start:
 		call	set_up_page_tables
 		call	enable_paging
 
-		lgdt	(gdt64.pointer)				# load the 64-bit gdt
-		jmp		$0x08, $long_mode_start		# long jump to long mode
+		lgdt	(gdt64.pointer)								# load the 64-bit gdt
+		jmp		$gdt64.code, $long_mode_start				# long jump to long mode
 
 		hlt
 
@@ -152,12 +160,3 @@ p2_table:
 stack_bottom:
 		.skip 64
 stack_top:
-
-.section .rodata
-gdt64:
-		.quad 0	# zero entry
-.equ gdt64.code, 0x08
-		.quad (1<<43) | (1<<44) | (1<<47) | (1<<53) # code segment
-gdt64.pointer:
-		.word . - gdt64 - 1
-		.quad gdt64
